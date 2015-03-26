@@ -19,10 +19,10 @@ define twemproxy::resource::nutcracker (
 
   $instance_name = "nutcracker-${name}"
 
-   $service_template_os_specific = $osfamily ? {
-        'RedHat'   => 'twemproxy/nutcracker-redhat.erb',
-        'Debian'   => 'twemproxy/nutcracker.erb',
-        default    => 'twemproxy/nutcracker.erb',
+   $service_template_os_specific = $::osfamily ? {
+        'RedHat'   => 'twemproxy/nutcracker.init.erb',
+        'Debian'   => 'twemproxy/nutcracker.init.debian.erb',
+        default    => 'twemproxy/nutcracker.init.debian.erb',
     }
 
   file { "/etc/nutcracker/${instance_name}.yml":
