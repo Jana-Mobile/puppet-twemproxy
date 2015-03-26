@@ -27,7 +27,7 @@ ulimit -Sn 100000
 
 [ -x $DAEMON ] || exit 0
 
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+[ -r /etc/default/<%= @instance_name %> ] && . /etc/default/<%= @instance_name %>
 
 . /lib/init/vars.sh
 
