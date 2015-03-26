@@ -23,20 +23,19 @@ define twemproxy::resource::nutcracker (
         default    => 'twemproxy/nutcracker.erb',
     }
 
-  File {
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644'
-  }
-
   file { "/etc/nutcracker/${name}.yml":
     ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     content => template('twemproxy/pool.erb',
                         'twemproxy/members.erb'),
   }
   ->
   file { "/etc/init.d/${name}":
     ensure  => present,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0755',
     content => template("${service_template_os_specific}"),
   }
