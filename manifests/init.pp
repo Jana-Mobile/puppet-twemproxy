@@ -28,7 +28,9 @@ class twemproxy (
   $daemon_path       = '/usr/local/bin/nutcracker',
   $log_dir           = '/var/log/nutcracker',
   $pid_dir           = '/var/run/nutcracker',
+  $manage_user       = true,
   $twemproxy_user    = 'twemproxy',
+  $manage_group      = true,
   $twemproxy_group   = 'twemproxy',
 ) {
 
@@ -41,17 +43,29 @@ class twemproxy (
     }
   }
 
-  group { $twemproxy_group:
-    ensure => present,
-    system => true
+  if $manage_group == true {
+    group { $twemproxy_group:
+      ensure => present,
+      system => true
+    }
   }
 
-  user { $twemproxy_user:
-    ensure => present,
-    gid    => $twemproxy_group,
-    home   => $pid_dir,
-    shell  => '/usr/bin/false',
-    system => true
+  if !defined(Group[$twemproxy_group]) {
+    fail("Must define Group[$twemproxy_group]")
+  }
+
+  if $manage_user == true {
+    user { $twemproxy_user:
+      ensure => present,
+      gid    => $twemproxy_group,
+      home   => $pid_dir,
+      shell  => '/usr/bin/false',
+      system => true
+    }
+  }
+
+  if !defined(User[$twemproxy_user]) {
+    fail("Must define User[$twemproxy_user]")
   }
 
   file { '/etc/nutcracker':
