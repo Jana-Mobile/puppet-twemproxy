@@ -17,7 +17,8 @@ define twemproxy::resource::nutcracker (
 
   require twemproxy
 
-  $instance_name = "nutcracker-${name}"
+  $instance_name  = "nutcracker-${name}"
+  $twemproxy_user = $twemproxy::twemproxy_user
 
   $service_template_os_specific = $::osfamily ? {
     'RedHat'   => 'twemproxy/nutcracker.init.erb',
@@ -25,6 +26,20 @@ define twemproxy::resource::nutcracker (
     default    => 'twemproxy/nutcracker.init.debian.erb',
   }
 
+  $sysconfig_file = $::osfamily ? {
+    'RedHat' => "/etc/sysconfig/${instance_name}",
+    'Debian' => "/etc/default/${instance_name}",
+    default  => "/etc/default/${instance_name}",
+  }
+
+  file { $sysconfig_file:
+    ensure   => present,
+    owner    => 'root',
+    group    => 'root',
+    mode     => '0644',
+    template => content('twemproxy/sysconfig.erb')
+  }
+  ->
   file { "/etc/nutcracker/${instance_name}.yml":
     ensure  => present,
     owner   => 'root',
