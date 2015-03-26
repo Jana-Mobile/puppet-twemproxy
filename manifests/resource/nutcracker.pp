@@ -17,8 +17,13 @@ define twemproxy::resource::nutcracker (
 
   require twemproxy
 
-  $instance_name  = "nutcracker-${name}"
-  $twemproxy_user = $::twemproxy::twemproxy_user
+  $instance_name   = "nutcracker-${name}"
+  $daemon_path     = $::twemproxy::daemon_path
+  $log_dir         = $::twemproxy::log_dir
+  $pid_dir         = $::twemproxy::pid_dir
+  $twemproxy_user  = $::twemproxy::twemproxy_user
+  $twemproxy_group = $::twemproxy::twemproxy_group
+
 
   $service_template_os_specific = $::osfamily ? {
     'RedHat'   => 'twemproxy/nutcracker.init.erb',
