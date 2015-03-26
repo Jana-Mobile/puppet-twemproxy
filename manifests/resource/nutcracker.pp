@@ -38,11 +38,11 @@ define twemproxy::resource::nutcracker (
   }
 
   file { $sysconfig_file:
-    ensure   => present,
-    owner    => 'root',
-    group    => 'root',
-    mode     => '0644',
-    template => content('twemproxy/sysconfig.erb')
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('twemproxy/sysconfig.erb')
   }
 
   file { "/etc/nutcracker/${instance_name}.yml":
