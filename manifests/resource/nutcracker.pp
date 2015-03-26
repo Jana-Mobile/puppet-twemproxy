@@ -57,7 +57,7 @@ define twemproxy::resource::nutcracker (
     content => template("${service_template_os_specific}"),
   }
   ->
-  service { ${instance_name}:
+  service { $instance_name:
     ensure => true,
     enable => true
   }
