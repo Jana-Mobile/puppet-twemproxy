@@ -17,13 +17,15 @@ define twemproxy::resource::nutcracker (
 
   require twemproxy
 
+  $instance_name = "nutcracker-${name}"
+
    $service_template_os_specific = $osfamily ? {
         'RedHat'   => 'twemproxy/nutcracker-redhat.erb',
         'Debian'   => 'twemproxy/nutcracker.erb',
         default    => 'twemproxy/nutcracker.erb',
     }
 
-  file { "/etc/nutcracker/${name}.yml":
+  file { "/etc/nutcracker/${instance_name}.yml":
     ensure  => present,
     owner   => 'root',
     group   => 'root',
@@ -32,7 +34,7 @@ define twemproxy::resource::nutcracker (
                         'twemproxy/members.erb'),
   }
   ->
-  file { "/etc/init.d/${name}":
+  file { "/etc/init.d/${instance_name}":
     ensure  => present,
     owner   => 'root',
     group   => 'root',
@@ -40,10 +42,10 @@ define twemproxy::resource::nutcracker (
     content => template("${service_template_os_specific}"),
   }
   ->
-  exec { "/etc/init.d/${name} restart":
-    command     => "/etc/init.d/${name} restart",
-    alias       => "reload-nutcracker-${name}",
-    require     => [ File["/etc/init.d/${name}"], File["/etc/nutcracker/${name}.yml"] ]
+  exec { "/etc/init.d/${instance_name} restart":
+    command     => "/etc/init.d/${instance_name} restart",
+    alias       => "reload-nutcracker-${instance_name}",
+    require     => [ File["/etc/init.d/${instance_name}"], File["/etc/nutcracker/${instance_name}.yml"] ]
   }
 
 }
