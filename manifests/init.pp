@@ -59,7 +59,7 @@ class twemproxy (
       ensure => present,
       gid    => $twemproxy_group,
       home   => $pid_dir,
-      shell  => '/usr/bin/false',
+      shell  => '/bin/false',
       system => true
     }
   }
