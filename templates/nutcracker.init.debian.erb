@@ -12,6 +12,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=nutcracker
 NAME=nutcracker
 USER=nobody
+GROUP=nogroup
 CONFFILE=/opt/nutcracker/etc/$NAME.yml
 LOGFILE=/opt/nutcracker/log/nutcracker.log
 DAEMON=/opt/nutcracker/sbin/nutcracker
@@ -36,11 +37,11 @@ do_start()
 {
     mkdir -p /var/run/nutcracker
     touch $PIDFILE
-    chown $USER:$USER -R /var/run/nutcracker
+    chown $USER:$GROUP -R /var/run/nutcracker
     chmod 755 /var/run/nutcracker
 
     echo -n "Starting ${NAME}: "
-    start-stop-daemon --start --quiet -m --pidfile $PIDFILE --chuid $USER:$USER --exec $DAEMON -- \
+    start-stop-daemon --start --quiet -m --pidfile $PIDFILE --chuid $USER:$GROUP --exec $DAEMON -- \
         $DAEMON_ARGS
         case "$?" in
             0|1) echo "STARTED." ;;
