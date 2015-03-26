@@ -42,7 +42,8 @@ class twemproxy (
   }
 
   group { $twemproxy_group:
-    ensure => present
+    ensure => present,
+    system => true
   }
 
   user { $twemproxy_user:
@@ -50,6 +51,7 @@ class twemproxy (
     gid    => $twemproxy_group,
     home   => $pid_dir,
     shell  => '/usr/bin/false',
+    system => true
   }
 
   file { '/etc/nutcracker':
