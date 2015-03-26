@@ -44,7 +44,7 @@ define twemproxy::resource::nutcracker (
     mode     => '0644',
     template => content('twemproxy/sysconfig.erb')
   }
-  ->
+
   file { "/etc/nutcracker/${instance_name}.yml":
     ensure  => present,
     owner   => 'root',
@@ -53,7 +53,7 @@ define twemproxy::resource::nutcracker (
     content => template('twemproxy/pool.erb',
                         'twemproxy/members.erb'),
   }
-  ->
+
   file { "/etc/init.d/${instance_name}":
     ensure  => present,
     owner   => 'root',
@@ -61,10 +61,14 @@ define twemproxy::resource::nutcracker (
     mode    => '0755',
     content => template("${service_template_os_specific}"),
   }
-  ->
+
   service { $instance_name:
     ensure => true,
     enable => true
   }
+
+  File[$sysconfig_file] ~> Service[$instance_name]
+  File["/etc/nutcracker/${instance_name}.yml"] ~> Service[$instance_name]
+  File["/etc/init.d/${instance_name}"] ~> Service[$instance_name]
 
 }
