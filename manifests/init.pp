@@ -22,11 +22,23 @@
 #  }
 
 class twemproxy (
-  $log_dir         = '/var/log/nutcracker',
-  $pid_dir         = '/var/run/nutcracker',
-  $twemproxy_user  = 'twemproxy',
-  $twemproxy_group = 'twemproxy',
+  $compile_twemproxy = true,
+  $package_ensure    = present,
+  $package_name      = 'twemproxy', # Have also seen "nutcracker" out there.
+  $log_dir           = '/var/log/nutcracker',
+  $pid_dir           = '/var/run/nutcracker',
+  $twemproxy_user    = 'twemproxy',
+  $twemproxy_group   = 'twemproxy',
 ) {
+
+  if $compile_twemproxy == true {
+    class { '::twemproxy::install': }
+  } else {
+    package { 'twemproxy':
+      ensure => $package_ensure,
+      alias  => 'twemproxy'
+    }
+  }
 
   group { $twemproxy_group:
     ensure => present
@@ -58,6 +70,12 @@ class twemproxy (
     owner  => $twemproxy_user,
     group  => $twemproxy_group,
     mode   => '0755'
+  }
+
+  if $compile_twemproxy == true {
+    Class['twemproxy::install'] -> Group[$twemproxy_group]
+  } else {
+    Package['twemproxy'] -> Group[$twemproxy_group]
   }
 
   Group[$twemproxy_group] ->
