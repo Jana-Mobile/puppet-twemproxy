@@ -1,8 +1,8 @@
 # Set defaults for nutcracker instance <%= @name %>
-<% if @osfamily =~ /redhat/ %>
+<% if @osfamily.downcase == 'redhat' %>
 USER="<%= @twemproxy_user %>"
 OPTIONS="-d -c /etc/nutcracker/<%= @instance_name %>.yml"
-<% elsif @osfamily =~ /debian/ %>
+<% elsif @osfamily.downcase == 'debian' %>
 DESC=<%= @instance_name %>
 NAME=<%= @instance_name %>
 USER=<%= @twemproxy_user %>
