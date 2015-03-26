@@ -25,6 +25,7 @@ class twemproxy (
   $compile_twemproxy = true,
   $package_ensure    = present,
   $package_name      = 'twemproxy', # Have also seen "nutcracker" out there.
+  $daemon_path       = '/usr/local/bin/nutcracker',
   $log_dir           = '/var/log/nutcracker',
   $pid_dir           = '/var/run/nutcracker',
   $twemproxy_user    = 'twemproxy',
