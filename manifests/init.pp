@@ -22,9 +22,22 @@
 #  }
 
 class twemproxy (
-  $log_dir      = '/var/log/nutcracker',
-  $pid_dir      = '/var/run/nutcracker',
+  $log_dir         = '/var/log/nutcracker',
+  $pid_dir         = '/var/run/nutcracker',
+  $twemproxy_user  = 'twemproxy',
+  $twemproxy_group = 'twemproxy',
 ) {
+
+  group { $twemproxy_group:
+    ensure => present
+  }
+
+  user { $twemproxy_user:
+    ensure => present,
+    group  => $twemproxy_group,
+    home   => $pid_dir,
+    shell  => '/usr/bin/false',
+  }
 
   file { '/etc/nutcracker':
     ensure  => 'directory',
@@ -34,17 +47,23 @@ class twemproxy (
   }
 
   file { "${log_dir}":
-    ensure  => 'directory',
-    owner  => 'root',
-    group  => 'root',
+    ensure => 'directory',
+    owner  => $twemproxy_user,
+    group  => $twemproxy_group,
     mode   => '0755'
   }
 
   file { "${pid_dir}":
-    ensure  => 'directory',
-    owner  => 'root',
-    group  => 'root',
+    ensure => 'directory',
+    owner  => $twemproxy_user,
+    group  => $twemproxy_group,
     mode   => '0755'
   }
+
+  Group[$twemproxy_group] ->
+  User[$twemproxy_user] ->
+  File['/etc/nutcracker'] ->
+  File[$log_dir] ->
+  File[$pid_dir]
 
 }
