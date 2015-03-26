@@ -47,7 +47,7 @@ class twemproxy (
 
   user { $twemproxy_user:
     ensure => present,
-    group  => $twemproxy_group,
+    gid    => $twemproxy_group,
     home   => $pid_dir,
     shell  => '/usr/bin/false',
   }
