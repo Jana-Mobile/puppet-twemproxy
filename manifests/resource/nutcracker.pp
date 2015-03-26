@@ -42,10 +42,9 @@ define twemproxy::resource::nutcracker (
     content => template("${service_template_os_specific}"),
   }
   ->
-  exec { "/etc/init.d/${instance_name} restart":
-    command     => "/etc/init.d/${instance_name} restart",
-    alias       => "reload-nutcracker-${instance_name}",
-    require     => [ File["/etc/init.d/${instance_name}"], File["/etc/nutcracker/${instance_name}.yml"] ]
+  service { ${instance_name}:
+    ensure => true,
+    enable => true
   }
 
 }
