@@ -4,6 +4,7 @@ define twemproxy::resource::nutcracker (
   $auto_eject_hosts     = true,
   $distribution         = 'ketama',
   $ensure               = 'present',
+  $exec_dir             = '/usr/local/bin',
   $log_dir              = '/var/log/nutcracker',
   $members              = '',
   $nutcracker_hash      = 'fnv1a_64',
