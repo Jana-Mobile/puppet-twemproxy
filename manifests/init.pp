@@ -21,6 +21,30 @@
 #      ]
 #  }
 
-class twemproxy {
+class twemproxy (
+  $log_dir      = '/var/log/nutcracker',
+  $pid_dir      = '/var/run/nutcracker',
+) {
+
+  file { '/etc/nutcracker':
+    ensure  => 'directory',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+  }
+
+  file { "${log_dir}":
+    ensure  => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
+  }
+
+  file { "${pid_dir}":
+    ensure  => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
+  }
 
 }
