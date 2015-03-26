@@ -25,9 +25,9 @@ SCRIPTNAME=/etc/init.d/$NAME
 ulimit -Hn 100000
 ulimit -Sn 100000
 
-[ -x $DAEMON ] || exit 0
-
 [ -r /etc/default/<%= @instance_name %> ] && . /etc/default/<%= @instance_name %>
+
+[ -x $DAEMON ] || exit 0
 
 . /lib/init/vars.sh
 
