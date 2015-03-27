@@ -3,10 +3,8 @@
 USER="<%= @twemproxy_user %>"
 OPTIONS="-d -c /etc/nutcracker/<%= @instance_name %>.yml"
 <% elsif @osfamily.downcase == 'debian' %>
-# Defined in init script or else a second instance causes update-rc.d to fail.
-#DESC=<%= @instance_name %>
-#NAME=<%= @instance_name %>
-
+DESC=<%= @instance_name %>
+NAME=<%= @instance_name %>
 USER=<%= @twemproxy_user %>
 GROUP=<%= @twemproxy_group %>
 CONFFILE="/etc/nutcracker/<%= @instance_name %>.yml"

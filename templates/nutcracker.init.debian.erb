@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          nutcracker
+# Provides:          <%= @instance_name %>
 # Required-Start:    $network $remote_fs $local_fs
 # Required-Stop:     $network $remote_fs $local_fs
 # Default-Start:     2 3 4 5
@@ -9,8 +9,8 @@
 ### END INIT INFO
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC=<%= @instance_name %>
-NAME=<%= @instance_name %>
+DESC=nutcracker
+NAME=nutcracker
 USER=nobody
 GROUP=nogroup
 CONFFILE=/opt/nutcracker/etc/$NAME.yml
