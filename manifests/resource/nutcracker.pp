@@ -4,11 +4,9 @@ define twemproxy::resource::nutcracker (
   $auto_eject_hosts     = true,
   $distribution         = 'ketama',
   $ensure               = 'present',
-  $log_dir              = '/var/log/nutcracker',
   $members              = '',
   $nutcracker_hash      = 'fnv1a_64',
   $nutcracker_hash_tag  = '',
-  $pid_dir              = '/var/run/nutcracker',
   $port                 = '22111',
   $redis                = true,
   $server_retry_timeout = '2000',
@@ -17,60 +15,60 @@ define twemproxy::resource::nutcracker (
   $twemproxy_timeout    = '300'
 ) {
 
+  require twemproxy
 
-   $service_template_os_specific = $osfamily ? {
-        'RedHat'   => 'twemproxy/nutcracker-redhat.erb',
-        'Debian'   => 'twemproxy/nutcracker.erb',
-        default    => 'twemproxy/nutcracker.erb',
-    }
+  $instance_name   = "nutcracker-${name}"
+  $daemon_path     = $::twemproxy::daemon_path
+  $log_dir         = $::twemproxy::log_dir
+  $pid_dir         = $::twemproxy::pid_dir
+  $twemproxy_user  = $::twemproxy::twemproxy_user
+  $twemproxy_group = $::twemproxy::twemproxy_group
 
-  File {
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644'
+
+  $service_template_os_specific = $::osfamily ? {
+    'RedHat'   => 'twemproxy/nutcracker.init.erb',
+    'Debian'   => 'twemproxy/nutcracker.init.debian.erb',
+    default    => 'twemproxy/nutcracker.init.debian.erb',
   }
 
-  # Ensure nutcracker config directory exists
-  if ! defined(File['/etc/nutcracker']) {
-    file { '/etc/nutcracker':
-      ensure  => 'directory',
-      mode    => '0755',
-    }
+  $sysconfig_file = $::osfamily ? {
+    'RedHat' => "/etc/sysconfig/${instance_name}",
+    'Debian' => "/etc/default/${instance_name}",
+    default  => "/etc/default/${instance_name}",
   }
 
-  # Ensure nutcracker log directory exists
-  if ! defined(File["${log_dir}"]) {
-    file { "${log_dir}":
-      ensure  => 'directory',
-      mode    => '0755',
-    }
-  }
-
-  # Ensure nutcracker pid directory exists
-  if ! defined(File["${pid_dir}"]) {
-    file { "${pid_dir}":
-      ensure  => 'directory',
-      mode    => '0755',
-    }
-  }
-
-  file { "/etc/nutcracker/${name}.yml":
+  file { $sysconfig_file:
     ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('twemproxy/sysconfig.erb')
+  }
+
+  file { "/etc/nutcracker/${instance_name}.yml":
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     content => template('twemproxy/pool.erb',
                         'twemproxy/members.erb'),
   }
-  ->
-  file { "/etc/init.d/${name}":
+
+  file { "/etc/init.d/${instance_name}":
     ensure  => present,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0755',
     content => template("${service_template_os_specific}"),
-    require => [ File["$log_dir"], File["$pid_dir"] ]
   }
-  ->
-  exec { "/etc/init.d/${name} restart":
-    command     => "/etc/init.d/${name} restart",
-    alias       => "reload-nutcracker-${name}",
-    require     => [ File["/etc/init.d/${name}"], File["/etc/nutcracker/${name}.yml"] ]
+
+  service { $instance_name:
+    ensure => true,
+    enable => true
   }
+
+  File[$sysconfig_file] ~> Service[$instance_name]
+  File["/etc/nutcracker/${instance_name}.yml"] ~> Service[$instance_name]
+  File["/etc/init.d/${instance_name}"] ~> Service[$instance_name]
 
 }
