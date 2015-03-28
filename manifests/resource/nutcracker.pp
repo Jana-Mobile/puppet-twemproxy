@@ -12,7 +12,9 @@ define twemproxy::resource::nutcracker (
   $server_retry_timeout = '2000',
   $server_failure_limit = '3',
   $statsport            = '21111',
-  $twemproxy_timeout    = '300'
+  $twemproxy_timeout    = '300',
+  $verbosity            = '11',
+  $mbuf_size            = '2048'
 ) {
 
   require twemproxy
