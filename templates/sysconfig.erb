@@ -1,7 +1,7 @@
 # Set defaults for nutcracker instance <%= @name %>
 <% if @osfamily.downcase == 'redhat' %>
 USER="<%= @twemproxy_user %>"
-OPTIONS="-d -c /etc/nutcracker/<%= @instance_name %>.yml"
+OPTIONS="-d -c /etc/nutcracker/<%= @instance_name %>.yml -v <%= @verbosity %> -m <%= @mbuf_size %>"
 <% elsif @osfamily.downcase == 'debian' %>
 DESC=<%= @instance_name %>
 NAME=<%= @instance_name %>
@@ -12,6 +12,6 @@ LOGFILE="<%= @log_dir %>/<%= @instance_name %>.log"
 DAEMON="<%= @daemon_path %>"
 PIDFILE=<%= @pid_dir %>/<%= @instance_name %>.pid
 STATSPORT=<%= @statsport %>
-DAEMON_ARGS="-c $CONFFILE -o $LOGFILE -p $PIDFILE -s $STATSPORT -v 11 -m 2048 -d"
+DAEMON_ARGS="-c $CONFFILE -o $LOGFILE -p $PIDFILE -s $STATSPORT -v <%= @verbosity %> -m <%= @mbuf_size %> -d"
 SCRIPTNAME=/etc/init.d/<%= @instance_name %>
 <% end %>
