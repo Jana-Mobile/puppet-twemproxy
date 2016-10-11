@@ -65,8 +65,9 @@ define twemproxy::resource::nutcracker (
   }
 
   service { $instance_name:
-    ensure => true,
-    enable => true
+    ensure    => true,
+    enable    => true,
+    subscribe => Package['twemproxy'],
   }
 
   File[$sysconfig_file] ~> Service[$instance_name]
